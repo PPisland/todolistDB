@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+}
+
+model User{
+  id Int @id @default(autoincrement())  
+   // default(...)은 1,2,3,4 ... 자동으로 입력되게 해주는 기능
+  account String @unique
+   // unique 는 중복된 값을 받지않게 해주는 기능
+  name String?
+  todos Todo[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Todo {
+  id Int @id @default(autoincrement())
+  todo String @unique
+  isDone Boolean
+  user User @relation(fields: [userId], references: [id])
+  // 1대다 에서 다쪽에서 관계를 정의  references의 id는 User의 id 
+  userId Int 
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([userId])
+}
+
